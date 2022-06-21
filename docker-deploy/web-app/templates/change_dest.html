@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+{% load static %}
+{% load bootstrap5 %}
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Order Page</title>
+    <style>
+        .scroll-section {
+            max-height: 100px;
+            overflow-y: auto;
+          }
+    </style>
+
+</head>
+
+<body>
+    <header>
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+          <!-- Container wrapper -->
+          <div class="container">
+      
+              <!-- Toggle button -->
+              <button class="navbar-toggler" type="button" data-mdb-toggle="collapse"
+                  data-mdb-target="#navbarButtonsExample" aria-controls="navbarButtonsExample" aria-expanded="false"
+                  aria-label="Toggle navigation">
+                  <i class="fas fa-bars"></i>
+              </button>
+      
+              <!-- Collapsible wrapper -->
+              <div class="collapse navbar-collapse" id="navbarButtonsExample">
+                  <!-- Left links -->
+                  <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                      <a class="nav-link" href="{% url 'website:index' %}">UPS Service</a>
+                    </li>
+                    {% if is_login%}
+                    <li class="nav-item">
+                      <a class="nav-link" href="{% url 'website:orders' %}">Orders</a>
+                    </li>
+                    {%endif%}
+                  </ul>
+                  <!-- Left links -->
+      
+                  <div class="d-flex align-items-center">
+                    <div class="dropdown">
+                        <button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenuButton1"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            profile
+                        </button>
+                        
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <li><a class="dropdown-item" href="{% url 'website:account' %}">My Profile</a></li>
+                            {% comment %} <li><a class="dropdown-item" href="{% url 'website:edit_profile' %}">Edit Profile</a></li> {% endcomment %}
+                            <li><a class="dropdown-item" href="{% url 'website:logout' %}">Log out</a></li>
+                        </ul>
+                    </div>
+                </div>
+              </div>
+              <!-- Collapsible wrapper -->
+          </div>
+          <!-- Container wrapper -->
+      </nav>
+    </header>
+    <div class="container py-5 h-100">
+        {% if error_message %}
+            <div class="alert alert-primary" data-dismiss="alert">
+                {{error_message}}
+            </div>
+            {% endif %}
+    {% comment %} action="{% url 'website:change_dest' %}" {% endcomment %}
+        <form method="post">
+            {% csrf_token %}
+            {% if error_message %}
+            <div class="alert alert-primary" data-dismiss="alert">
+                {{error_message}}
+            </div>
+            {% endif %}
+            <!-- x -->
+            <div class="form-outline mb-4">
+            {{dest_form.x}}
+            </div>
+            <!-- y -->
+            <div class="form-outline mb-4">
+            {{dest_form.y}}
+            </div>
+            <!-- Submit button -->
+            <div class="d-flex justify-content-around align-items-center mb-4">
+                <button type="submit" class="btn btn-danger btn-lg btn-block">submit</button>
+            </div>
+           
+        </form>
+    </div>
+</body>
+</html>

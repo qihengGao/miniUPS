@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+{% load static %}
+{% load bootstrap5 %}
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home Page</title>
+    {% comment %} <link rel="stylesheet" href="{% static 'css/index.css' %}" type="text/css" media="all"> {% endcomment %}
+
+    <style>
+      html,
+      body,
+      .intro {
+          height: 100%;
+      }
+      .bg-image-vertical {
+          position: relative;
+          overflow: hidden;
+          background-repeat: no-repeat;
+          background-position: right center;
+          background-size: auto 100%;
+      }
+      .form-outline .form-control:focus~.form-notch .form-notch-leading {
+          border-top: 0.125rem solid #EFD3E4;
+          border-bottom: 0.125rem solid #EFD3E4;
+          border-left: 0.125rem solid #EFD3E4;
+      }
+      .form-outline .form-control:focus~.form-notch .form-notch-middle {
+          border-color: #EFD3E4;
+      }
+      .form-outline .form-control:focus~.form-notch .form-notch-trailing {
+          border-top: 0.125rem solid #EFD3E4;
+          border-bottom: 0.125rem solid #EFD3E4;
+          border-right: 0.125rem solid #EFD3E4;
+      }
+      .form-outline .form-control:focus~.form-label {
+          color: #EFD3E4;
+      }
+      .autocomplete-input.focused~.form-notch .form-notch-leading {
+          border-top: 2px solid #EFD3E4;
+          border-bottom: 2px solid #EFD3E4;
+          border-left: 2px solid #EFD3E4;
+          transition: all 0.2s linear;
+      }
+      .autocomplete-input.focused~.form-notch .form-notch-middle {
+          border-color: #EFD3E4;
+      }
+      .autocomplete-input.focused~.form-notch .form-notch-trailing {
+          border-color: #EFD3E4;
+      }
+      .autocomplete-input.focused~.autocomplete-label {
+          color: #EFD3E4;
+      }
+    </style>
+</head>
+<body>
+
+<header>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <!-- Container wrapper -->
+    <div class="container">
+
+        <!-- Toggle button -->
+        <button class="navbar-toggler" type="button" data-mdb-toggle="collapse"
+            data-mdb-target="#navbarButtonsExample" aria-controls="navbarButtonsExample" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- Collapsible wrapper -->
+        <div class="collapse navbar-collapse" id="navbarButtonsExample">
+            <!-- Left links -->
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'website:index' %}">UPS Service</a>
+              </li>
+              {% if is_login%}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'website:orders' %}">Orders</a>
+              </li>
+              {%endif%}
+            </ul>
+            <!-- Left links -->
+
+            <div class="d-flex align-items-center">
+                <div class="dropdown">
+                    <button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenuButton1"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        profile
+                    </button>
+                    
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        {% if is_login%}
+                          <li><a class="dropdown-item" href="{% url 'website:account' %}">My Profile</a></li>
+                          {% comment %} <li><a class="dropdown-item" href="{% url 'website:edit_profile' %}">Edit Profile</a></li> {% endcomment %}
+                          <li><a class="dropdown-item" href="{% url 'website:logout' %}">Log out</a></li>
+                        {% else %}
+                          <li><a class="dropdown-item" href="{% url 'website:login' %}">Login</a></li>
+                        {%endif%}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- Collapsible wrapper -->
+    </div>
+    <!-- Container wrapper -->
+</nav>
+</header>
+
+    <section class="intro">
+        <div class="bg-image-vertical h-100" style="background-color: #EFD3E4;
+                background-image: url(https://mdbootstrap.com/img/Photos/new-templates/search-box/img1.jpg);
+              ">
+          <div class="mask d-flex align-items-center h-100">
+            <div class="container">
+              <p class="display-4 font-weight-bold mb-5 text-dark">Track your package here</p>
+              <div class="card">
+                <div class="card-body">
+                  <div class="row justify-content-center">
+                    {% if error_message %}
+                        <div class="alert alert-primary" data-dismiss="alert">
+                            {{error_message}}
+                        </div>
+                      {% endif %}
+                    <form class="mx-1 mx-md-4 input-group" action="{% url 'website:index' %}" method="post">
+                      {% csrf_token %}
+                      <div class="col-md-6 mb-3 mb-md-0">
+                        <div id="basic" class="form-outline">
+                          {{track_form.trackingid}}
+                          <label class="form-label" for="form1">What are you looking for?</label>
+                        </div>
+                      </div>
+                      <div class="col-md-2">
+                        <button class="btn btn-outline-danger" type="submit" data-mdb-ripple-color="dark">
+                          Search
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+</body>
+</html>

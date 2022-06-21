@@ -1,0 +1,82 @@
+syntax = "proto2";
+
+package UPS;
+
+message USendWorldId{
+    required int64 world_id = 1;
+}
+
+message APacPickup{
+    required int32 whid = 1; 
+    required int64 shipment_id = 2; 
+    optional string ups_username = 3;
+    required int32 x = 4;
+    required int32 y = 5;
+}
+
+message UPacPickupRes{
+    required int64 tracking_id = 1; 
+    optional bool is_binded = 2;    
+    required int64 shipment_id = 3; 
+    required int32 truck_id = 4;    
+}
+
+message UsendArrive{
+    required int32 truck_id = 1;
+    required int32 x = 2;
+    required int32 y = 3;
+}
+
+message AProduct {
+    required int64 product_id = 1;
+    required string description = 2;
+    required int32 count = 3;
+}
+
+message APackage{ 
+    required int32 x = 1; 
+    required int32 y = 2;
+    required int64 shipment_id = 3; 
+    repeated AProduct items = 4;
+}
+
+message ASendAllLoaded{
+    repeated APackage packages = 1; 
+    required int32 truck_id = 2; 
+}
+
+message UPacDelivered{
+    required int64 shipment_id = 1;
+}
+
+
+message ABindUpsUser{
+    required int64 shipment_id = 1;
+    required string ups_username = 2;
+}
+
+message UBindRes{
+    required int64 shipment_id = 1;
+    required bool is_binded = 2;
+}
+
+
+message UResendPackage{
+    required int64 shipment_id = 1;
+}
+
+
+message UAmessage{
+    optional USendWorldId world_id = 1;
+    optional UPacPickupRes pickup_res = 2;
+    optional UsendArrive send_arrive = 3;
+    optional UPacDelivered pac_delivered = 4;
+    optional UBindRes bind_res = 5;
+    optional UResendPackage resend_package = 6;
+}
+
+message AUmessage{
+    optional APacPickup pickup = 1;
+    optional ASendAllLoaded all_loaded = 2;
+    optional ABindUpsUser bind_upsuser = 3;
+}

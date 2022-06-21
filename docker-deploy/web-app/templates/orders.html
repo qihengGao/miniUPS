@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+{% load static %}
+{% load bootstrap5 %}
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Change dest addr</title>
+    <style>
+        .scroll-section {
+            max-height: 100px;
+            overflow-y: auto;
+          }
+    </style>
+
+</head>
+
+<body>
+    <header>
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+          <!-- Container wrapper -->
+          <div class="container">
+      
+              <!-- Toggle button -->
+              <button class="navbar-toggler" type="button" data-mdb-toggle="collapse"
+                  data-mdb-target="#navbarButtonsExample" aria-controls="navbarButtonsExample" aria-expanded="false"
+                  aria-label="Toggle navigation">
+                  <i class="fas fa-bars"></i>
+              </button>
+      
+              <!-- Collapsible wrapper -->
+              <div class="collapse navbar-collapse" id="navbarButtonsExample">
+                  <!-- Left links -->
+                  <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                      <a class="nav-link" href="{% url 'website:index' %}">UPS Service</a>
+                    </li>
+                    {% if is_login%}
+                    <li class="nav-item">
+                      <a class="nav-link" href="{% url 'website:orders' %}">Orders</a>
+                    </li>
+                    {%endif%}
+                  </ul>
+                  <!-- Left links -->
+      
+                  <div class="d-flex align-items-center">
+                    <div class="dropdown">
+                        <button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenuButton1"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            profile
+                        </button>
+                        
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <li><a class="dropdown-item" href="{% url 'website:account' %}">My Profile</a></li>
+                            {% comment %} <li><a class="dropdown-item" href="{% url 'website:edit_profile' %}">Edit Profile</a></li> {% endcomment %}
+                            <li><a class="dropdown-item" href="{% url 'website:logout' %}">Log out</a></li>
+                        </ul>
+                    </div>
+                </div>
+              </div>
+              <!-- Collapsible wrapper -->
+          </div>
+          <!-- Container wrapper -->
+      </nav>
+    </header>
+    <div class="container py-5 h-100">
+        <div class="d-flex align-items-center">
+            <img
+                src="https://mdbootstrap.com/img/new/avatars/8.jpg"
+                alt=""
+                style="width: 45px; height: 45px"
+                class="rounded-circle"
+                />
+            <div class="ms-3">
+              <p class="fw-bold mb-1">{{user.username}}</p>
+              <p class="text-muted mb-0">{{user.email}}</p>
+            </div>
+          </div>
+    <table class="table align-middle mb-0 bg-white">
+        <thead class="bg-light">
+          <tr>
+            <th>Package id</th>
+            <th>Truck</th>
+            <th>Status</th>
+            <th>Dest addt</th>
+            <th>Change dest</th>
+            <th>Items</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for package in user_packages %}
+            <tr>
+              <td>
+                  <p class="fw-normal mb-1">{{package.tracking_id}}</p>
+              </td>
+              <td>
+                <p class="fw-normal mb-1">{{package.truckid.truckid}}</p>
+              </td>
+              <td>
+                  <p class="fw-normal mb-1">{{package.status}}</p>
+                </td>
+              <td>
+                  <p class="fw-normal mb-1">{{package.x}}, {{package.y}}</p>
+              </td>
+              <td>
+              {% if package.status == 'in WH' or package.status == 'loading'%}
+                  <button class="btn btn-outline-danger" type="submit" onclick="location.href='{% url 'website:change_dest' package_id=package.shipment_id truck_id=package.truckid.truckid%}'">
+                    Change
+                  </button> 
+              {%elif package.status == 'delivered' %}
+                  <button class="btn btn-outline-danger" type="submit" onclick="location.href='{% url 'website:resend' package_id=package.shipment_id %}'">
+                    Resend
+                  </button> 
+              {%else%}
+              <button class="btn btn-outline-danger" disabled>
+                Change
+              </button>
+              {%endif%}
+            </td>
+              <td>
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr class="info">
+                      <th>Description</th>
+                      <th>Count</th>
+                    </tr>
+                  </thead>
+                  <tbody>	
+                    {% for item in pac_items%}
+                    {% if item.tracking_id.tracking_id == package.tracking_id %}
+                      <tr>
+                        <td>
+                          <p class="fw-normal mb-1">{{item.description}}</p>
+                        </td>
+                        <td>
+                            <p class="fw-normal mb-1">{{item.count}}</p>
+                        </td>
+                      </tr>
+                    {%endif%}
+                    {%endfor%}
+                  </tbody>
+                </table>
+              </td>
+          </tr>
+          {%endfor%}
+        </tbody>
+      </table>
+    </div>
+</body>
+</html>

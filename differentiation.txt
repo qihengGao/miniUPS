@@ -1,0 +1,6 @@
+1. We will inform the user through email when his/her package has been delivered.
+2. We can bind an unbinded track to the login user.
+3. The user can change the destination address of his/her undelivering package.
+4. The user can resend his/her delivered packages if packages are lost.
+5. We use a deamon thread to establish an faster and more efficient connection between the front-end and the back-end.
+6. Add account detail page, summarize the pacakge information belong to this account.

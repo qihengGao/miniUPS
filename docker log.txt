@@ -1,0 +1,35 @@
+Danger Log
+=====================
+1.	Security
+=====================
+1)	Users cannot read others’ information. 
+Solution: We should access data through sessions that could be isolated from each other, instead of directly searching by users’ id.
+2)	We cannot expose our source code in the production environment, which may leak the absolute path of the web application and the path of the Python interpreter. Besides, the debug page contains an interactive shell for Python that can execute arbitrary Python code. 
+Solution: To avoid this security danger, we set the DEBUG to false to close the debug page in the production environment.
+3)	Sometimes we need to perform a series of operations on the database. If one of the operations fails, then the other operations must be rolled back to the previous state of the operation.
+Solution: Convert data operations of functions in the views into transactions.
+4)	Potential CSRF attack: it is an implicit authentication mechanism originating from the web. Although the authentication mechanism of the Web can guarantee that a request comes from a user's browser, it cannot guarantee that the request is approved by the user. 
+Solution: Anti CSRF token. When Django responds to a request from a client for the first time, it will randomly generate a token on the server-side and put this token in a cookie. Then every POST request will bring this token, so as to avoid being attacked by CSRF.
+5)	Dealing with requests of malicious users: Some important requests involving CRUD operations, such as canceling rides or changing ride details, need to be verified their source – do they come from users who have the authority or some malicious users.
+Solution: We perform delete and update operations using POST form instead of urls.
+--------------------------------------
+
+=====================
+2.	Bugs
+=====================
+Most of our bugs are Non-deterministic behavior due to multi-threading
+1) We found the status of our trucks and their packages will quickly change from delivered to delivering, after deliver the package. After thoroughly examination, we found this is due to threads' race condition. 
+If the destination is pretty close to the warehouse, the package will be delivered really fast, and world may send back the completion before the delivered.
+In this case, we will generate two threads to handle the two responses from world. The completion one will be handled first, and truck status will be set as delivered. 
+Then the delivered will be handled and change the truck status to delivering, and never change again.  
+2) front-end socket communication with back-end within docker:
+ back-end side: in docker-compose.yml, need to expose the port number
+ front-end side: in views.py where creating the socket to back-end, need to change the host name to the container name of back-end(in our case, server)
+3) PK violence of Item
+
+
+=====================
+3.	Robustness
+=====================
+1) We add try-catch blocks to all our code where needed. In this way, our server won't crash when meet errors.
+2) We have also handled multiple external failures cases, including failures of building sockets, connecting to web server, receiving and sending data through sockets, ect.

@@ -1,0 +1,49 @@
+version: '2'
+
+services:
+  db:
+      image: postgres
+      environment:
+        - POSTGRES_PASSWORD=passw0rd
+        - POSTGRES_USER=postgres
+        - POSTGRES_DB=ups
+      restart: always
+      volumes:
+            - data-volume:/var/lib/postgresql/data
+  web-init:
+      build: ./web-app
+      command: /code/initserver.sh
+      volumes:
+        - ./web-app:/code
+      depends_on:
+        - db
+  web-server:
+      build: ./web-app
+      command: /code/runclient.sh
+      volumes:
+        - ./web-app:/code
+      ports: 
+        - "55555:55555" #ports for amazon
+        - "8888:8888" #ports for front end
+      depends_on:
+        - web-init
+  web:
+      build: ./web-app
+      user: nobody
+      command: /code/runserver.sh
+      volumes:
+        - ./web-app:/code
+      expose:
+        - "8000"
+      depends_on:
+        - web-server
+  nginx:
+     image: nginx:latest
+     ports:
+       - "8000:8000"
+     volumes:
+       - ./nginx/config:/etc/nginx/conf.d
+     depends_on:
+       - web
+volumes:
+   data-volume: 
